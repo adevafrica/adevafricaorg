@@ -1,0 +1,315 @@
+<!-- Hero Section -->
+<section class="relative px-6 py-20 overflow-hidden">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center">
+      <!-- Floating Elements -->
+      <div class="absolute top-10 left-10 w-20 h-20 rounded-full bg-primary-400/20 floating-element"></div>
+      <div class="absolute top-32 right-20 w-16 h-16 rounded-full bg-secondary-400/20 floating-element" style="animation-delay: -2s;"></div>
+      <div class="absolute bottom-20 left-1/3 w-12 h-12 rounded-full bg-accent-400/20 floating-element" style="animation-delay: -4s;"></div>
+      
+      <h1 class="section-title animate-fade-in">
+        Empowering African
+        <span class="block">Innovation</span>
+      </h1>
+      
+      <p class="section-subtitle animate-slide-up">
+        Join the leading platform for African development projects. Connect with investors, 
+        vote on groundbreaking initiatives, and build the future of Africa together.
+      </p>
+      
+      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center animate-slide-up" style="animation-delay: 0.2s;">
+        <%= link_to projects_path, class: "glass-button bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-semibold px-8 py-4 text-lg glow-effect" do %>
+          Explore Projects
+          <svg class="w-5 h-5 ml-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+          </svg>
+        <% end %>
+        
+        <% unless user_signed_in? %>
+          <%= link_to new_user_registration_path, class: "glass-button text-white font-semibold px-8 py-4 text-lg" do %>
+            Join Community
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Section -->
+<section class="px-6 py-16">
+  <div class="max-w-7xl mx-auto">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div class="stats-card animate-scale-in">
+        <div class="stats-number">250+</div>
+        <div class="stats-label">Active Projects</div>
+      </div>
+      <div class="stats-card animate-scale-in" style="animation-delay: 0.1s;">
+        <div class="stats-number">$2.5M</div>
+        <div class="stats-label">Funds Raised</div>
+      </div>
+      <div class="stats-card animate-scale-in" style="animation-delay: 0.2s;">
+        <div class="stats-number">15K+</div>
+        <div class="stats-label">Community Members</div>
+      </div>
+      <div class="stats-card animate-scale-in" style="animation-delay: 0.3s;">
+        <div class="stats-number">54</div>
+        <div class="stats-label">Countries</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Projects Section -->
+<section class="px-6 py-16">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-16">
+      <h2 class="section-title">Featured Projects</h2>
+      <p class="section-subtitle">
+        Discover innovative projects that are shaping the future of Africa
+      </p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <% if @featured_projects&.any? %>
+        <% @featured_projects.each_with_index do |project, index| %>
+          <div class="project-card animate-slide-up" style="animation-delay: <%= index * 0.1 %>s;">
+            <div class="aspect-video bg-gradient-to-br from-primary-400/20 to-secondary-400/20 rounded-xl mb-4 overflow-hidden">
+              <% if project.featured_image.attached? %>
+                <%= image_tag project.featured_image, class: "project-image w-full h-full object-cover" %>
+              <% else %>
+                <div class="w-full h-full flex items-center justify-center">
+                  <div class="text-center">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-400 to-secondary-400 flex items-center justify-center mx-auto mb-2">
+                      <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H3m2 0h4M9 7h6m-6 4h6m-6 4h6"></path>
+                      </svg>
+                    </div>
+                    <span class="text-white/60 text-sm">Project Image</span>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+            
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="px-3 py-1 rounded-full text-xs font-medium bg-primary-500/20 text-primary-300 border border-primary-400/30">
+                  <%= project.category.humanize %>
+                </span>
+                <span class="text-white/60 text-sm">
+                  <%= project.days_remaining %> days left
+                </span>
+              </div>
+              
+              <h3 class="text-xl font-semibold text-white group-hover:gradient-text transition-all duration-300">
+                <%= project.title %>
+              </h3>
+              
+              <p class="text-white/80 text-sm line-clamp-2">
+                <%= truncate(project.description, length: 120) %>
+              </p>
+              
+              <!-- Progress Bar -->
+              <div class="space-y-2">
+                <div class="flex justify-between text-sm">
+                  <span class="text-white/80">
+                    $<%= number_with_delimiter(project.total_raised) %> raised
+                  </span>
+                  <span class="text-white/60">
+                    <%= project.funding_percentage %>%
+                  </span>
+                </div>
+                <div class="w-full bg-white/10 rounded-full h-2">
+                  <div class="bg-gradient-to-r from-primary-400 to-secondary-400 h-2 rounded-full transition-all duration-500" 
+                       style="width: <%= [project.funding_percentage, 100].min %>%"></div>
+                </div>
+              </div>
+              
+              <div class="flex items-center justify-between pt-2">
+                <div class="flex items-center space-x-2">
+                  <div class="w-8 h-8 rounded-full bg-gradient-to-br from-primary-400 to-secondary-400"></div>
+                  <span class="text-white/80 text-sm"><%= project.team.name %></span>
+                </div>
+                
+                <%= link_to project_path(project), class: "glass-button text-sm px-4 py-2" do %>
+                  View Details
+                <% end %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      <% else %>
+        <!-- Placeholder Projects -->
+        <% 3.times do |i| %>
+          <div class="project-card animate-slide-up" style="animation-delay: <%= i * 0.1 %>s;">
+            <div class="aspect-video bg-gradient-to-br from-primary-400/20 to-secondary-400/20 rounded-xl mb-4 flex items-center justify-center">
+              <div class="text-center">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-400 to-secondary-400 flex items-center justify-center mx-auto mb-2">
+                  <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H3m2 0h4M9 7h6m-6 4h6m-6 4h6"></path>
+                  </svg>
+                </div>
+                <span class="text-white/60 text-sm">Featured Project</span>
+              </div>
+            </div>
+            
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="px-3 py-1 rounded-full text-xs font-medium bg-primary-500/20 text-primary-300 border border-primary-400/30">
+                  Technology
+                </span>
+                <span class="text-white/60 text-sm">30 days left</span>
+              </div>
+              
+              <h3 class="text-xl font-semibold text-white">Sample Project <%= i + 1 %></h3>
+              <p class="text-white/80 text-sm">This is a sample project showcasing the platform's capabilities and design.</p>
+              
+              <div class="space-y-2">
+                <div class="flex justify-between text-sm">
+                  <span class="text-white/80">$<%= number_with_delimiter((i + 1) * 25000) %> raised</span>
+                  <span class="text-white/60"><%= (i + 1) * 25 %>%</span>
+                </div>
+                <div class="w-full bg-white/10 rounded-full h-2">
+                  <div class="bg-gradient-to-r from-primary-400 to-secondary-400 h-2 rounded-full" style="width: <%= (i + 1) * 25 %>%"></div>
+                </div>
+              </div>
+              
+              <div class="flex items-center justify-between pt-2">
+                <div class="flex items-center space-x-2">
+                  <div class="w-8 h-8 rounded-full bg-gradient-to-br from-primary-400 to-secondary-400"></div>
+                  <span class="text-white/80 text-sm">Sample Team</span>
+                </div>
+                <button class="glass-button text-sm px-4 py-2">View Details</button>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+    
+    <div class="text-center mt-12">
+      <%= link_to projects_path, class: "glass-button bg-gradient-to-r from-primary-500/20 to-secondary-500/20 text-white font-semibold px-8 py-4" do %>
+        View All Projects
+        <svg class="w-5 h-5 ml-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+        </svg>
+      <% end %>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="px-6 py-16">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-16">
+      <h2 class="section-title">Platform Features</h2>
+      <p class="section-subtitle">
+        Everything you need to fund, vote, and build successful African projects
+      </p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="glass-card text-center animate-slide-up">
+        <div class="feature-icon">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-white mb-3">Smart Funding</h3>
+        <p class="text-white/80">
+          Secure escrow system with milestone-based releases and multiple payment options including M-Pesa and Stripe.
+        </p>
+      </div>
+      
+      <div class="glass-card text-center animate-slide-up" style="animation-delay: 0.1s;">
+        <div class="feature-icon">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-white mb-3">Community Voting</h3>
+        <p class="text-white/80">
+          Democratic project selection through weighted community voting with real-time results and transparent governance.
+        </p>
+      </div>
+      
+      <div class="glass-card text-center animate-slide-up" style="animation-delay: 0.2s;">
+        <div class="feature-icon">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-white mb-3">AI Assistance</h3>
+        <p class="text-white/80">
+          Get intelligent insights and recommendations from specialized AI assistants for project planning and market analysis.
+        </p>
+      </div>
+      
+      <div class="glass-card text-center animate-slide-up" style="animation-delay: 0.3s;">
+        <div class="feature-icon">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-white mb-3">Geographic Mapping</h3>
+        <p class="text-white/80">
+          Visualize project locations and impact across Africa with interactive maps and geospatial analytics.
+        </p>
+      </div>
+      
+      <div class="glass-card text-center animate-slide-up" style="animation-delay: 0.4s;">
+        <div class="feature-icon">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-white mb-3">Investment Pools</h3>
+        <p class="text-white/80">
+          Join collaborative funding pools for larger impact projects and diversify your investment portfolio.
+        </p>
+      </div>
+      
+      <div class="glass-card text-center animate-slide-up" style="animation-delay: 0.5s;">
+        <div class="feature-icon">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-white mb-3">Real-time Analytics</h3>
+        <p class="text-white/80">
+          Track project progress, funding metrics, and community engagement with comprehensive real-time dashboards.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="px-6 py-20">
+  <div class="max-w-4xl mx-auto text-center">
+    <div class="glass rounded-4xl p-12">
+      <h2 class="text-4xl md:text-5xl font-bold gradient-text mb-6">
+        Ready to Build Africa's Future?
+      </h2>
+      <p class="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
+        Join thousands of innovators, investors, and changemakers who are already making a difference across the continent.
+      </p>
+      
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <% unless user_signed_in? %>
+          <%= link_to new_user_registration_path, class: "glass-button bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-semibold px-8 py-4 text-lg glow-effect" do %>
+            Get Started Today
+            <svg class="w-5 h-5 ml-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+            </svg>
+          <% end %>
+        <% end %>
+        
+        <%= link_to about_path, class: "glass-button text-white font-semibold px-8 py-4 text-lg" do %>
+          Learn More
+        <% end %>
+      </div>
+    </div>
+  </div>
+</section>
+

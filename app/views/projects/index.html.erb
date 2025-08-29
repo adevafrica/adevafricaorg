@@ -1,0 +1,272 @@
+<!-- Header Section -->
+<section class="px-6 py-16">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-12">
+      <h1 class="section-title">Discover Projects</h1>
+      <p class="section-subtitle">
+        Explore innovative projects that are transforming communities across Africa
+      </p>
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="glass rounded-3xl p-6 mb-12">
+      <%= form_with url: projects_path, method: :get, local: true, class: "space-y-6" do |form| %>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Search -->
+          <div class="md:col-span-2">
+            <%= form.text_field :search, 
+                placeholder: "Search projects...", 
+                value: params[:search],
+                class: "glass-input w-full" %>
+          </div>
+          
+          <!-- Category Filter -->
+          <div>
+            <%= form.select :category, 
+                options_for_select([
+                  ['All Categories', ''],
+                  ['Technology', 'technology'],
+                  ['Agriculture', 'agriculture'],
+                  ['Healthcare', 'healthcare'],
+                  ['Education', 'education'],
+                  ['Fintech', 'fintech']
+                ], params[:category]),
+                {},
+                { class: "glass-input w-full" } %>
+          </div>
+        </div>
+        
+        <div class="flex flex-col sm:flex-row gap-4 justify-between items-center">
+          <div class="flex gap-2">
+            <%= form.submit "Search", class: "glass-button bg-gradient-to-r from-primary-500/20 to-secondary-500/20 text-white font-medium px-6 py-2" %>
+            <%= link_to "Clear", projects_path, class: "glass-button text-white/80 hover:text-white px-6 py-2" %>
+          </div>
+          
+          <div class="flex items-center space-x-4 text-white/80">
+            <span class="text-sm">Sort by:</span>
+            <select class="glass-input py-2 px-3 text-sm">
+              <option>Most Recent</option>
+              <option>Most Funded</option>
+              <option>Ending Soon</option>
+              <option>Most Votes</option>
+            </select>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>
+
+<!-- Projects Grid -->
+<section class="px-6 pb-16">
+  <div class="max-w-7xl mx-auto">
+    <% if @projects&.any? %>
+      <!-- Results Info -->
+      <div class="flex justify-between items-center mb-8">
+        <p class="text-white/80">
+          Showing <%= @projects.count %> of <%= @projects.total_count %> projects
+        </p>
+        <div class="flex items-center space-x-2">
+          <button class="glass-button p-2 text-white/80 hover:text-white">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+            </svg>
+          </button>
+          <button class="glass-button p-2 text-white/80 hover:text-white">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Projects Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <% @projects.each_with_index do |project, index| %>
+          <div class="project-card animate-slide-up" style="animation-delay: <%= index * 0.05 %>s;">
+            <!-- Project Image -->
+            <div class="aspect-video bg-gradient-to-br from-primary-400/20 to-secondary-400/20 rounded-xl mb-4 overflow-hidden relative">
+              <% if project.featured_image.attached? %>
+                <%= image_tag project.featured_image, class: "project-image w-full h-full object-cover" %>
+              <% else %>
+                <div class="w-full h-full flex items-center justify-center">
+                  <div class="text-center">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-400 to-secondary-400 flex items-center justify-center mx-auto mb-2">
+                      <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H3m2 0h4M9 7h6m-6 4h6m-6 4h6"></path>
+                      </svg>
+                    </div>
+                    <span class="text-white/60 text-sm">Project Image</span>
+                  </div>
+                </div>
+              <% end %>
+              
+              <!-- Status Badge -->
+              <div class="absolute top-3 left-3">
+                <span class="px-3 py-1 rounded-full text-xs font-medium bg-<%= project.status == 'published' ? 'green' : 'yellow' %>-500/20 text-<%= project.status == 'published' ? 'green' : 'yellow' %>-300 border border-<%= project.status == 'published' ? 'green' : 'yellow' %>-400/30 backdrop-blur-sm">
+                  <%= project.status.humanize %>
+                </span>
+              </div>
+              
+              <!-- Favorite Button -->
+              <div class="absolute top-3 right-3">
+                <button class="w-8 h-8 rounded-full glass flex items-center justify-center text-white/60 hover:text-red-400 transition-colors duration-200">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            
+            <!-- Project Info -->
+            <div class="space-y-4">
+              <!-- Category and Time -->
+              <div class="flex items-center justify-between">
+                <span class="px-3 py-1 rounded-full text-xs font-medium bg-primary-500/20 text-primary-300 border border-primary-400/30">
+                  <%= project.category.humanize %>
+                </span>
+                <span class="text-white/60 text-sm">
+                  <%= project.days_remaining %> days left
+                </span>
+              </div>
+              
+              <!-- Title -->
+              <h3 class="text-xl font-semibold text-white group-hover:gradient-text transition-all duration-300 line-clamp-2">
+                <%= link_to project.title, project_path(project), class: "hover:gradient-text" %>
+              </h3>
+              
+              <!-- Description -->
+              <p class="text-white/80 text-sm line-clamp-3">
+                <%= truncate(project.description, length: 150) %>
+              </p>
+              
+              <!-- Funding Progress -->
+              <div class="space-y-2">
+                <div class="flex justify-between text-sm">
+                  <span class="text-white/80 font-medium">
+                    $<%= number_with_delimiter(project.total_raised) %>
+                  </span>
+                  <span class="text-white/60">
+                    of $<%= number_with_delimiter(project.funding_goal) %>
+                  </span>
+                </div>
+                <div class="w-full bg-white/10 rounded-full h-2">
+                  <div class="bg-gradient-to-r from-primary-400 to-secondary-400 h-2 rounded-full transition-all duration-500" 
+                       style="width: <%= [project.funding_percentage, 100].min %>%"></div>
+                </div>
+                <div class="flex justify-between text-xs text-white/60">
+                  <span><%= project.funding_percentage %>% funded</span>
+                  <span><%= pluralize(project.investments.count, 'backer') %></span>
+                </div>
+              </div>
+              
+              <!-- Team and Actions -->
+              <div class="flex items-center justify-between pt-2">
+                <div class="flex items-center space-x-2">
+                  <div class="w-8 h-8 rounded-full bg-gradient-to-br from-primary-400 to-secondary-400 flex items-center justify-center">
+                    <span class="text-white text-xs font-medium">
+                      <%= project.team.name.first.upcase %>
+                    </span>
+                  </div>
+                  <div>
+                    <p class="text-white/80 text-sm font-medium"><%= project.team.name %></p>
+                    <p class="text-white/60 text-xs"><%= project.team.location || 'Africa' %></p>
+                  </div>
+                </div>
+                
+                <div class="flex items-center space-x-2">
+                  <!-- Vote Score -->
+                  <div class="flex items-center space-x-1 text-white/60">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"></path>
+                    </svg>
+                    <span class="text-xs"><%= project.vote_score %></span>
+                  </div>
+                  
+                  <%= link_to project_path(project), class: "glass-button text-sm px-4 py-2 hover:bg-gradient-to-r hover:from-primary-500/20 hover:to-secondary-500/20" do %>
+                    View Details
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- Pagination -->
+      <% if @projects.respond_to?(:total_pages) && @projects.total_pages > 1 %>
+        <div class="flex justify-center mt-12">
+          <div class="glass rounded-2xl p-2 flex items-center space-x-2">
+            <% if @projects.prev_page %>
+              <%= link_to projects_path(page: @projects.prev_page, search: params[:search], category: params[:category]), 
+                  class: "glass-button px-4 py-2" do %>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+              <% end %>
+            <% end %>
+            
+            <% ([@projects.current_page - 2, 1].max..[@projects.current_page + 2, @projects.total_pages].min).each do |page| %>
+              <%= link_to projects_path(page: page, search: params[:search], category: params[:category]), 
+                  class: "glass-button px-4 py-2 #{'bg-gradient-to-r from-primary-500/20 to-secondary-500/20' if page == @projects.current_page}" do %>
+                <%= page %>
+              <% end %>
+            <% end %>
+            
+            <% if @projects.next_page %>
+              <%= link_to projects_path(page: @projects.next_page, search: params[:search], category: params[:category]), 
+                  class: "glass-button px-4 py-2" do %>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
+    <% else %>
+      <!-- Empty State -->
+      <div class="text-center py-20">
+        <div class="glass rounded-3xl p-12 max-w-md mx-auto">
+          <div class="w-20 h-20 rounded-3xl bg-gradient-to-br from-primary-400/20 to-secondary-400/20 flex items-center justify-center mx-auto mb-6">
+            <svg class="w-10 h-10 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+          </div>
+          <h3 class="text-2xl font-semibold text-white mb-4">No Projects Found</h3>
+          <p class="text-white/80 mb-6">
+            <% if params[:search].present? || params[:category].present? %>
+              No projects match your current search criteria. Try adjusting your filters.
+            <% else %>
+              There are no projects available at the moment. Check back soon!
+            <% end %>
+          </p>
+          <% if params[:search].present? || params[:category].present? %>
+            <%= link_to "Clear Filters", projects_path, class: "glass-button bg-gradient-to-r from-primary-500/20 to-secondary-500/20 text-white font-medium px-6 py-3" %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<% unless user_signed_in? %>
+  <section class="px-6 py-16">
+    <div class="max-w-4xl mx-auto text-center">
+      <div class="glass rounded-4xl p-8">
+        <h2 class="text-3xl font-bold gradient-text mb-4">
+          Have a Project Idea?
+        </h2>
+        <p class="text-white/80 mb-6">
+          Join our community and get funding for your innovative African project.
+        </p>
+        <%= link_to new_user_registration_path, class: "glass-button bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-semibold px-8 py-3" do %>
+          Submit Your Project
+        <% end %>
+      </div>
+    </div>
+  </section>
+<% end %>
+

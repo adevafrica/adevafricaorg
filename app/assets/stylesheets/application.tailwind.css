@@ -1,0 +1,187 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+/* Custom glassmorphism components */
+@layer components {
+  .glass {
+    @apply bg-white/10 backdrop-blur-md border border-white/20 shadow-glass;
+  }
+  
+  .glass-dark {
+    @apply bg-black/10 backdrop-blur-md border border-white/10 shadow-glass;
+  }
+  
+  .glass-card {
+    @apply glass rounded-2xl p-6 transition-all duration-300 hover:bg-white/20 hover:shadow-glass-inset;
+  }
+  
+  .glass-nav {
+    @apply glass rounded-full px-6 py-3 transition-all duration-300 hover:bg-white/20;
+  }
+  
+  .glass-button {
+    @apply glass rounded-full px-6 py-3 font-medium transition-all duration-300 hover:bg-white/20 hover:scale-105 active:scale-95;
+  }
+  
+  .glass-input {
+    @apply glass rounded-2xl px-4 py-3 placeholder-white/60 text-white border-white/30 focus:border-white/50 focus:ring-2 focus:ring-white/20;
+  }
+  
+  .gradient-bg {
+    @apply bg-gradient-to-br from-primary-500 via-secondary-500 to-accent-500;
+  }
+  
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary-400 to-secondary-400 bg-clip-text text-transparent;
+  }
+  
+  .floating-element {
+    @apply animate-float;
+  }
+  
+  .glow-effect {
+    @apply shadow-glow animate-glow;
+  }
+  
+  .grid-pattern {
+    background-image: 
+      linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+  
+  .mesh-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-size: 400% 400%;
+    animation: gradient-shift 15s ease infinite;
+  }
+  
+  .card-hover {
+    @apply transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:-translate-y-2;
+  }
+  
+  .nav-item {
+    @apply relative px-4 py-2 rounded-full transition-all duration-300 hover:bg-white/10;
+  }
+  
+  .nav-item::after {
+    content: '';
+    @apply absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-to-r from-primary-400 to-secondary-400 transition-all duration-300 transform -translate-x-1/2;
+  }
+  
+  .nav-item:hover::after {
+    @apply w-full;
+  }
+  
+  .project-card {
+    @apply glass-card group cursor-pointer overflow-hidden;
+  }
+  
+  .project-card:hover {
+    @apply transform scale-105 shadow-2xl;
+  }
+  
+  .project-card .project-image {
+    @apply transition-transform duration-500 group-hover:scale-110;
+  }
+  
+  .stats-card {
+    @apply glass-card text-center;
+  }
+  
+  .stats-number {
+    @apply text-3xl font-bold gradient-text;
+  }
+  
+  .stats-label {
+    @apply text-white/80 text-sm font-medium;
+  }
+  
+  .feature-icon {
+    @apply w-12 h-12 rounded-2xl glass flex items-center justify-center text-primary-400 mb-4;
+  }
+  
+  .section-title {
+    @apply text-4xl md:text-5xl font-bold gradient-text mb-6;
+  }
+  
+  .section-subtitle {
+    @apply text-xl text-white/80 mb-12 max-w-2xl mx-auto;
+  }
+}
+
+@layer utilities {
+  .text-shadow {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .text-shadow-lg {
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* Custom animations */
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-white/20 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-white/30;
+}
+
+/* Custom focus styles */
+.focus-visible {
+  @apply outline-none ring-2 ring-primary-400/50 ring-offset-2 ring-offset-transparent;
+}
+
+/* Loading animation */
+.loading-spinner {
+  @apply animate-spin rounded-full border-2 border-white/20 border-t-white;
+}
+
+/* Glassmorphism form elements */
+.glass-form {
+  @apply glass rounded-3xl p-8 space-y-6;
+}
+
+.glass-form input,
+.glass-form textarea,
+.glass-form select {
+  @apply glass-input w-full;
+}
+
+.glass-form label {
+  @apply block text-white/90 font-medium mb-2;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .glass-card {
+    @apply p-4 rounded-xl;
+  }
+  
+  .section-title {
+    @apply text-3xl;
+  }
+  
+  .glass-nav {
+    @apply px-4 py-2;
+  }
+}
+
