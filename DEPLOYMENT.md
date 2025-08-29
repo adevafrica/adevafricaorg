@@ -89,3 +89,86 @@ We will create two services on Render: one for the web application and one for t
 By default, Render will automatically deploy your application whenever you push to the `main` branch of your GitHub repository. You can configure this in the service settings.
 
 
+
+## 8. Automated Deployment with Render
+
+The project includes a `render.yaml` file for automated deployment:
+
+1. **Fork or clone the repository** to your GitHub account
+2. **Connect to Render**: 
+   - Go to [render.com](https://render.com) and sign up/login
+   - Connect your GitHub account
+   - Create a new "Blueprint" and select this repository
+3. **Environment Variables**: Set the following in Render dashboard:
+   - `STRIPE_SECRET_KEY`: Your Stripe secret key
+   - `STRIPE_PUBLISHABLE_KEY`: Your Stripe publishable key
+   - `SUPABASE_URL`: Your Supabase project URL
+   - `SUPABASE_SERVICE_ROLE_KEY`: Your Supabase service role key
+   - `SUPABASE_ANON_KEY`: Your Supabase anonymous key
+   - `MAPBOX_API_KEY`: Your Mapbox API key
+   - `ASSISTANT_API_KEY`: Your AI assistant API key (OpenAI/Mistral)
+4. **Deploy**: Render will automatically deploy the web service and worker
+
+## 9. Local Development Setup
+
+To run the application locally:
+
+```bash
+# Clone the repository
+git clone [your-repo-url]
+cd adevafrica
+
+# Install dependencies
+bundle install
+yarn install
+
+# Set up environment variables
+cp .env.example .env
+# Edit .env with your actual values
+
+# Set up database
+rails db:create
+rails db:migrate
+rails db:seed
+
+# Start Redis (for Sidekiq)
+redis-server
+
+# Start Sidekiq worker (in separate terminal)
+bundle exec sidekiq -C config/sidekiq.yml
+
+# Start Rails server
+rails server
+```
+
+## 10. Production Checklist
+
+Before going live:
+
+- [ ] Set up SSL certificate (automatic with Render)
+- [ ] Configure custom domain
+- [ ] Set up monitoring and logging
+- [ ] Configure backup strategy for database
+- [ ] Set up error tracking (e.g., Sentry)
+- [ ] Configure email delivery (SMTP)
+- [ ] Set up analytics (Google Analytics)
+- [ ] Test all payment flows
+- [ ] Verify webhook endpoints
+- [ ] Load test the application
+- [ ] Set up staging environment
+
+## 11. Maintenance
+
+Regular maintenance tasks:
+
+- Monitor application performance
+- Update dependencies regularly
+- Review and rotate API keys
+- Monitor database performance
+- Review and optimize Sidekiq jobs
+- Monitor payment processing
+- Review security logs
+- Update documentation
+
+For support, contact: support@adevafrica.com
+
