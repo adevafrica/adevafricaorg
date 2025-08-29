@@ -1,0 +1,219 @@
+<!-- Teams Hub Header -->
+<section class="px-6 py-16">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-12">
+      <h1 class="section-title animate-fade-in">Teams Hub</h1>
+      <p class="section-subtitle animate-slide-up">
+        Discover talented teams building the future of Africa
+      </p>
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="glass rounded-3xl p-6 mb-12">
+      <%= form_with url: teams_path, method: :get, local: true, class: "space-y-6" do |form| %>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Search -->
+          <div class="md:col-span-2">
+            <%= form.text_field :search, 
+                placeholder: "Search teams...", 
+                value: params[:search],
+                class: "glass-input w-full" %>
+          </div>
+          
+          <!-- Department Filter -->
+          <div>
+            <%= form.select :department, 
+                options_for_select([
+                  ['All Departments', ''],
+                  ['AI & Machine Learning', 'ai'],
+                  ['Design & UX', 'design'],
+                  ['Engineering', 'engineering'],
+                  ['Marketing', 'marketing'],
+                  ['Product', 'product'],
+                  ['Data Science', 'data'],
+                  ['Mobile Development', 'mobile'],
+                  ['Blockchain', 'blockchain']
+                ], params[:department]),
+                {},
+                { class: "glass-input w-full" } %>
+          </div>
+        </div>
+        
+        <div class="flex justify-center">
+          <%= form.submit "Search Teams", class: "glass-button bg-gradient-to-r from-primary-500/20 to-secondary-500/20 text-white font-medium px-8 py-3" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>
+
+<!-- Teams Grid -->
+<section class="px-6 pb-16">
+  <div class="max-w-7xl mx-auto">
+    <% if @teams.any? %>
+      <!-- Results Info -->
+      <div class="flex justify-between items-center mb-8">
+        <p class="text-white/80">
+          Showing <%= @teams.count %> teams
+        </p>
+        <div class="flex items-center space-x-2">
+          <%= link_to new_team_path, class: "glass-button bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-medium px-6 py-3" do %>
+            <svg class="w-5 h-5 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+            Create Team
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Teams Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <% @teams.each_with_index do |team, index| %>
+          <div class="glass-card animate-slide-up" style="animation-delay: <%= index * 0.1 %>s;">
+            <!-- Team Header -->
+            <div class="flex items-start justify-between mb-4">
+              <div class="flex items-center space-x-3">
+                <% if team.logo.attached? %>
+                  <%= image_tag team.logo, class: "w-12 h-12 rounded-2xl object-cover" %>
+                <% else %>
+                  <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary-400 to-secondary-400 flex items-center justify-center">
+                    <span class="text-white font-bold text-lg"><%= team.name.first.upcase %></span>
+                  </div>
+                <% end %>
+                <div>
+                  <h3 class="text-xl font-semibold text-white"><%= team.name %></h3>
+                  <p class="text-primary-300 text-sm"><%= team.department.humanize if team.department %></p>
+                </div>
+              </div>
+              
+              <span class="px-3 py-1 rounded-full text-xs font-medium bg-green-500/20 text-green-300 border border-green-400/30">
+                <%= team.status.humanize %>
+              </span>
+            </div>
+
+            <!-- Team Description -->
+            <p class="text-white/80 text-sm mb-4 line-clamp-3">
+              <%= truncate(team.description, length: 120) %>
+            </p>
+
+            <!-- Team Stats -->
+            <div class="grid grid-cols-3 gap-4 mb-4">
+              <div class="text-center">
+                <div class="text-2xl font-bold text-white"><%= team.members.count %></div>
+                <div class="text-white/60 text-xs">Members</div>
+              </div>
+              <div class="text-center">
+                <div class="text-2xl font-bold text-white"><%= team.projects.count %></div>
+                <div class="text-white/60 text-xs">Projects</div>
+              </div>
+              <div class="text-center">
+                <div class="text-2xl font-bold text-white">
+                  $<%= number_to_human(team.projects.sum(:total_raised), precision: 1) %>
+                </div>
+                <div class="text-white/60 text-xs">Raised</div>
+              </div>
+            </div>
+
+            <!-- Skills -->
+            <% if team.skills_required.present? %>
+              <div class="mb-4">
+                <div class="flex flex-wrap gap-2">
+                  <% team.skills_required.split(',').first(3).each do |skill| %>
+                    <span class="px-2 py-1 rounded-full text-xs bg-primary-500/20 text-primary-300 border border-primary-400/30">
+                      <%= skill.strip %>
+                    </span>
+                  <% end %>
+                  <% if team.skills_required.split(',').count > 3 %>
+                    <span class="px-2 py-1 rounded-full text-xs bg-white/10 text-white/60">
+                      +<%= team.skills_required.split(',').count - 3 %> more
+                    </span>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+
+            <!-- Location and Actions -->
+            <div class="flex items-center justify-between pt-4 border-t border-white/10">
+              <div class="flex items-center space-x-2 text-white/60">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                <span class="text-sm"><%= team.location || 'Remote' %></span>
+              </div>
+              
+              <div class="flex items-center space-x-2">
+                <% if team.looking_for_members? %>
+                  <%= link_to join_team_path(team), method: :post, class: "glass-button text-sm px-4 py-2 bg-gradient-to-r from-green-500/20 to-green-400/20 text-green-300 border-green-400/30" do %>
+                    Join Team
+                  <% end %>
+                <% end %>
+                
+                <%= link_to team_path(team), class: "glass-button text-sm px-4 py-2" do %>
+                  View Details
+                <% end %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- Pagination -->
+      <% if @teams.respond_to?(:total_pages) && @teams.total_pages > 1 %>
+        <div class="flex justify-center mt-12">
+          <div class="glass rounded-2xl p-2 flex items-center space-x-2">
+            <% if @teams.prev_page %>
+              <%= link_to teams_path(page: @teams.prev_page, search: params[:search], department: params[:department]), 
+                  class: "glass-button px-4 py-2" do %>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+              <% end %>
+            <% end %>
+            
+            <% ([@teams.current_page - 2, 1].max..[@teams.current_page + 2, @teams.total_pages].min).each do |page| %>
+              <%= link_to teams_path(page: page, search: params[:search], department: params[:department]), 
+                  class: "glass-button px-4 py-2 #{'bg-gradient-to-r from-primary-500/20 to-secondary-500/20' if page == @teams.current_page}" do %>
+                <%= page %>
+              <% end %>
+            <% end %>
+            
+            <% if @teams.next_page %>
+              <%= link_to teams_path(page: @teams.next_page, search: params[:search], department: params[:department]), 
+                  class: "glass-button px-4 py-2" do %>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
+    <% else %>
+      <!-- Empty State -->
+      <div class="text-center py-20">
+        <div class="glass rounded-3xl p-12 max-w-md mx-auto">
+          <div class="w-20 h-20 rounded-3xl bg-gradient-to-br from-primary-400/20 to-secondary-400/20 flex items-center justify-center mx-auto mb-6">
+            <svg class="w-10 h-10 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            </svg>
+          </div>
+          <h3 class="text-2xl font-semibold text-white mb-4">No Teams Found</h3>
+          <p class="text-white/80 mb-6">
+            <% if params[:search].present? || params[:department].present? %>
+              No teams match your current search criteria. Try adjusting your filters.
+            <% else %>
+              Be the first to create a team and start building amazing projects!
+            <% end %>
+          </p>
+          <% if params[:search].present? || params[:department].present? %>
+            <%= link_to "Clear Filters", teams_path, class: "glass-button bg-gradient-to-r from-primary-500/20 to-secondary-500/20 text-white font-medium px-6 py-3 mr-4" %>
+          <% end %>
+          <%= link_to "Create Team", new_team_path, class: "glass-button bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-medium px-6 py-3" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</section>
+
