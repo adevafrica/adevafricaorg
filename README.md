@@ -54,4 +54,3 @@ bundle exec rspec
 Deployment is configured for Render. Refer to `DEPLOYMENT.md` for detailed steps.
 
 
-
