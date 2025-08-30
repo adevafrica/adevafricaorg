@@ -48,3 +48,7 @@ module Adevafrica
   end
 end
 
+
+require 'active_support/core_ext/logger'
+
+
