@@ -60,3 +60,8 @@
 ### Missing boot.rb Fix
 - Added `config/boot.rb` to resolve `LoadError` during Rake tasks.
 
+
+
+### ActiveSupport::Logger Fix
+- Added `require 'active_support/core_ext/logger'` to `config/application.rb` to resolve `NameError` related to `ActiveSupport::Logger`Logger` logger`ActiveSupport::Logger during deployment.
+
