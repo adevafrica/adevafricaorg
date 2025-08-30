@@ -50,3 +50,8 @@
 ### Deployment Fix
 - Fixed deployment issues on Render by adding `x86_64-linux` platform to `Gemfile.lock` and ensuring Ruby 3.2.2 and its dependencies are correctly installed.
 
+
+
+### Rakefile Fix
+- Added a basic `Rakefile` to the project root to resolve the "No Rakefile found" error during deployment.
+
