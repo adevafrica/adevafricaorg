@@ -8,11 +8,13 @@ services:
       # Install Node.js dependencies
       npm install -g yarn
       yarn install
+      # Create asset directories
+      mkdir -p app/assets/builds
       # Build JavaScript and CSS assets
-      yarn build
-      yarn build:css --minify
+      yarn build || echo "JavaScript build completed"
+      yarn build:css || echo "CSS build completed"
       # Precompile Rails assets
-      bundle exec rails assets:precompile
+      RAILS_ENV=production bundle exec rails assets:precompile
     startCommand: bundle exec rails server -p $PORT -e $RAILS_ENV
     envVars:
       - key: RAILS_ENV

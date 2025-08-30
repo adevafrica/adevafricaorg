@@ -45,10 +45,12 @@ module Adevafrica
       g.routing_specs false
       g.controller_specs false
     end
+
+    # Asset configuration for production
+    config.assets.compile = true
+    config.assets.digest = true
+    config.serve_static_assets = true
   end
 end
-
-
-require 'active_support/core_ext/logger'
 
 
