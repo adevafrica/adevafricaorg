@@ -55,3 +55,8 @@
 ### Rakefile Fix
 - Added a basic `Rakefile` to the project root to resolve the "No Rakefile found" error during deployment.
 
+
+
+### Missing boot.rb Fix
+- Added `config/boot.rb` to resolve `LoadError` during Rake tasks.
+
