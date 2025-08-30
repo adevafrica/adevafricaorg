@@ -2,7 +2,17 @@ services:
   - type: web
     name: adevafrica-web
     env: ruby
-    buildCommand: bundle install && yarn install && bundle exec rails assets:precompile
+    buildCommand: |
+      # Install Ruby dependencies
+      bundle install
+      # Install Node.js dependencies
+      npm install -g yarn
+      yarn install
+      # Build JavaScript and CSS assets
+      yarn build
+      yarn build:css --minify
+      # Precompile Rails assets
+      bundle exec rails assets:precompile
     startCommand: bundle exec rails server -p $PORT -e $RAILS_ENV
     envVars:
       - key: RAILS_ENV
