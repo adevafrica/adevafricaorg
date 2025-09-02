@@ -130,3 +130,15 @@
 - `app/assets/stylesheets/application.css`: Created CSS entry point
 - `render.yaml`: Improved build command with error handling
 
+
+
+## 2025-09-02
+
+- Updated Node.js version to 22.x in `.node-version`.
+- Updated Ruby version to 3.3.0 and Rails to 7.1.0 in `Gemfile` and `.ruby-version`.
+- Installed missing Tailwind CSS plugins (`@tailwindcss/forms`, `@tailwindcss/typography`, `@tailwindcss/aspect-ratio`).
+- Fixed `@apply` usage with `group` utility in `app/assets/stylesheets/application.tailwind.css`.
+- Updated `render.yaml` to use `npx tailwindcss` directly for CSS build.
+- Updated browserslist database.
+
+

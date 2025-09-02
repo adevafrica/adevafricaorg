@@ -75,7 +75,7 @@
   }
   
   .project-card {
-    @apply glass-card group cursor-pointer overflow-hidden;
+    @apply glass-card cursor-pointer overflow-hidden;
   }
   
   .project-card:hover {
