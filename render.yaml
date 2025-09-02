@@ -5,6 +5,8 @@ services:
     buildCommand: |
       # Install Ruby dependencies
       bundle install
+      # Initialize Rails application to ensure logger is available
+      bundle exec rails runner "Rails.application.initialize!"
       # Install Node.js dependencies
       npm install -g yarn
       yarn install
